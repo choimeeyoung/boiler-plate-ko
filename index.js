@@ -27,6 +27,7 @@ app.post('/register', (req, res) => {
     // 회원가입 필요한 정보를 Client 에서 가져오면 DB에 저장
     const user = new User(req.body);
 
+    // 비밀번호의 암호화 작업 필요 (models/User.js 의 userSchema.pre('save'...) 에서 처리후 넘어옴
     user.save((error, doc) => {
         if (error) return res.json({ success: false, err })
         return res.status(200).json({ success: true })
