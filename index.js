@@ -5,6 +5,7 @@ const port = 5000;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const config = require('./config/key');
+const {auth} = require('./middleware/auth');
 
 const { User } = require("./models/User");
 
@@ -27,7 +28,7 @@ mongoose.connect(config.mongoURI, {
 app.get('/', (req, res) => res.send('Hello World!'))
 
 // 회원가입
-app.post('/register', (req, res) => {
+app.post('/api/user/register', (req, res) => {
     // 회원가입 필요한 정보를 Client 에서 가져오면 DB에 저장
     const user = new User(req.body);
 
@@ -39,7 +40,7 @@ app.post('/register', (req, res) => {
 })
 
 // 로그인
-app.post('/login', (req, res) => {
+app.post('/api/user/login', (req, res) => {
 
     User.findOne({ email: req.body.email }, (error, user) => {
         // db에서 요청된 이메일을 찾기
@@ -50,9 +51,9 @@ app.post('/login', (req, res) => {
             })
         }
 
-         // 이메일이 있는 경우 비밀번호가 맞는지 확인
+        // 이메일이 있는 경우 비밀번호가 맞는지 확인
         user.comparePassword(req.body.password, (error, isMatch) => {
-           
+
             if (!isMatch) {
                 return res.json({
                     loginSuccess: false,
@@ -70,11 +71,32 @@ app.post('/login', (req, res) => {
                 .status(200)
                 .json({ loginSuccess: true, userId: user._id })
         })
-
     })
 })
 
+// 로그아웃
+app.get('/api/user/logout',auth, (req,res) => {
+    User.findOneAndUpdate({_id:req.user._id},{token:""},(error,user) => {
+        if(error) return res.json({success:false, error});
+        return res.status(200).send({success:true})
+    })
+})
 
+// auth 기능
+app.get('/api/user/auth', auth, (req, res) => {
+    console.log("ok?")
+   // 여기까지 왔다면 미들웨어를 (auth) 를 통화 했음을 의미
+    return res.status(200).json({
+        _id: req.user._id,
+        isAdmin: req.user.role === 0 ? false : true,
+        isAuth: true,
+        email: req.user.email,
+        name: req.user.name,
+        lastname: req.user.lastname,
+        role: req.user.role,
+        image: req.user.image
+    })
+})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}`));
 

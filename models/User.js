@@ -25,7 +25,7 @@ const userSchema = mongoose.Schema({
         tpye: Number,
         default: 0
     },
-    image: String,
+    image:{tpye: String},
     token: {
         type: String
     },
@@ -82,6 +82,19 @@ userSchema.methods.generateToken = function (callback) {
         callback(null, user);
     })
 
+}
+
+// userToken의 Decode
+userSchema.statics.findByToken = function(token,callback){
+    const user = this;
+   // token => user._id + secretToken => decode 한 결과는 userId 값이 나온다.
+    jwt.verify(token,'secretToken', function(error,decode){                 // decode = user._id값 
+        // 유저 아이디를 이용해서 유저를 찾은후 클라이언트에서 가져온 token과 DB에 보관된 토큰이 일치하는지 확인
+        user.findOne({"_id": decode , "token": token},function(error,user){
+            if(error) return callback(error);
+                callback(null,user);
+        })
+    })
 }
 
 const User = mongoose.model('User', userSchema)
