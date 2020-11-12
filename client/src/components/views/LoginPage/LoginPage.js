@@ -34,10 +34,11 @@ function LoginPage(props) {
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100vh' }}>
             <form style={{ display: 'flex', flexDirection: 'column' }} onSubmit={onSubmistHandler}>
+            <h2 style={{display:'block', textAlign:'center'}}>로그인</h2>
                 <label>Email</label>
                 <input type="email" value={Email} onChange={onEmailHandler} />
                 <label>Password</label>
-                <input type="password" value={Password} onChange={onPasswordHandler} />
+                <input type="password" value={Password} onChange={onPasswordHandler} style={{border:'1px solid'}} />
 
                 <br />
                 <button>Longin</button>
