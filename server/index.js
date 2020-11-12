@@ -77,16 +77,16 @@ app.post('/api/user/login', (req, res) => {
 })
 
 // 로그아웃
-app.get('/api/user/logout', auth, (req, res) => {
+app.get('/api/user/logout', auth , (req, res) => {
+    console.log("ok============")
     User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (error, user) => {
         if (error) return res.json({ success: false, error });
-        return res.status(200).send({ success: true })
+        return res.status(200).json({ success: true })
     })
 })
 
 // auth 기능
 app.get('/api/user/auth', auth, (req, res) => {
-    console.log("ok?")
     // 여기까지 왔다면 미들웨어를 (auth) 를 통화 했음을 의미
     return res.status(200).json({
         _id: req.user._id,
