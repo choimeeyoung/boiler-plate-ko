@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const config = require('./config/key');
 
-const {auth} = require('./middleware/auth');
+const { auth } = require('./middleware/auth');
 const { User } = require("./models/User");
 
 // application/x-www-form-urlencode 된 데이터를 분석해서 가져올수 있도록 하기위함
@@ -42,7 +42,6 @@ app.post('/api/user/register', (req, res) => {
 
 // 로그인
 app.post('/api/user/login', (req, res) => {
-
     User.findOne({ email: req.body.email }, (error, user) => {
         // db에서 요청된 이메일을 찾기
         if (!user) {
@@ -76,17 +75,17 @@ app.post('/api/user/login', (req, res) => {
 })
 
 // 로그아웃
-app.get('/api/user/logout',auth, (req,res) => {
-    User.findOneAndUpdate({_id:req.user._id},{token:""},(error,user) => {
-        if(error) return res.json({success:false, error});
-        return res.status(200).send({success:true})
+app.get('/api/user/logout', auth, (req, res) => {
+    User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (error, user) => {
+        if (error) return res.json({ success: false, error });
+        return res.status(200).send({ success: true })
     })
 })
 
 // auth 기능
 app.get('/api/user/auth', auth, (req, res) => {
     console.log("ok?")
-   // 여기까지 왔다면 미들웨어를 (auth) 를 통화 했음을 의미
+    // 여기까지 왔다면 미들웨어를 (auth) 를 통화 했음을 의미
     return res.status(200).json({
         _id: req.user._id,
         isAdmin: req.user.role === 0 ? false : true,
@@ -97,6 +96,11 @@ app.get('/api/user/auth', auth, (req, res) => {
         role: req.user.role,
         image: req.user.image
     })
+})
+
+// /apu/hello
+app.get('/api/hello', (req, res) => {
+    res.send("안녕하세요~");
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}`));
