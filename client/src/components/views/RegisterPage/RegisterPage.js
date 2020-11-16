@@ -1,6 +1,7 @@
 import React,{useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {registerUser} from '../../../_actions/register_action';
+import {registerUser} from '../../../_actions/user_action';
+import {withRouter }from 'react-router-dom'
 
 
 
@@ -73,4 +74,4 @@ function RegisterPager(props) {
     )
 }
 
-export default RegisterPager
+export default withRouter(RegisterPager)
